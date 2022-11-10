@@ -30,9 +30,6 @@ public class FeatureModelAnalyzer {
 	}
 
 	public static boolean checkConsistent(String formula) {
-
-		// String formula = FeatureModelTranslator.translateToFormula(fm);
-
 		String result;
 		try {
 			result = LimbooleExecutor.runLimboole(formula, true);
@@ -47,28 +44,40 @@ public class FeatureModelAnalyzer {
 	}
 
 	public static List<String> deadFeatureNames(FeatureModel fm) {
+		
 		List<String> deadFeatures = new ArrayList<>();
 		String formula = FeatureModelTranslator.translateToFormula(fm);
-		
+
 		for (int featureRoot = 0; featureRoot < fm.getRoot().getChildren().size(); featureRoot++) {
 			if (fm.getRoot().getChildren().get(featureRoot).getChildren().size() > 0) {
-				for (int featureChildren = 0; featureChildren < fm.getRoot().getChildren().get(featureRoot).getChildren().size(); featureChildren++) {
-					String FeatureToEvaluateChildren = "!("+formula+" & "+ fm.getRoot().getChildren().get(featureRoot).getChildren().get(featureChildren).getName() + ")";
-					if(checkConsistent(formula)== false){
-						deadFeatures.add(FeatureToEvaluateChildren);
+				for (int featureChildren = 0; featureChildren < fm.getRoot().getChildren().get(featureRoot)
+						.getChildren().size(); featureChildren++) {
+					String FeatureToEvaluateChildren = "(" + formula + " & "
+							+ fm.getRoot().getChildren().get(featureRoot).getChildren().get(featureChildren).getName()
+							+ ")";
+					if (checkConsistent(FeatureToEvaluateChildren) == false) {
+						for (int f = 0; f < fm.getRoot().getChildren().get(featureRoot).getChildren().size(); f++) {
+							if (deadFeatures.contains(fm.getRoot().getName())) {
+								deadFeatures.add(fm.getRoot().getName());
+							}
+							deadFeatures
+									.add(fm.getRoot().getChildren().get(featureRoot).getChildren().get(f).getName());
+						}
 					}
 				}
 			} else {
-				String FeatureToEvaluateFather = "!("+formula + " & "+ fm.getRoot().getChildren().get(featureRoot).getName()+")";
-				if(checkConsistent(formula)== false){
-					deadFeatures.add(FeatureToEvaluateFather);
+				String FeatureToEvaluateFather = "(" + formula + " & "
+						+ fm.getRoot().getChildren().get(featureRoot).getName() + ")";
+				if (checkConsistent(FeatureToEvaluateFather) == false) {
+					deadFeatures.add(fm.getRoot().getName());
+					deadFeatures.add(fm.getRoot().getChildren().get(featureRoot).getName());
 				}
 			}
 		}
 		System.out.println(deadFeatures);
 		return deadFeatures;
 	}
-	
+
 	public static List<String> mandatoryFeatureNames(FeatureModel fm) {
 		List<String> mandatoryFeatures = new ArrayList<>();
 

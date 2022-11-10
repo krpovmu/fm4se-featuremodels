@@ -2,7 +2,7 @@
 <featureModel>
 	<properties>
 		<graphics key="autolayoutconstraints" value="false"/>
-		<graphics key="legendposition" value="750,7"/>
+		<graphics key="legendposition" value="955,8"/>
 		<graphics key="legendautolayout" value="false"/>
 		<graphics key="showconstraints" value="true"/>
 		<graphics key="showshortnames" value="false"/>
