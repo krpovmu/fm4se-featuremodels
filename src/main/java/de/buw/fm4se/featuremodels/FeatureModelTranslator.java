@@ -89,7 +89,7 @@ public class FeatureModelTranslator {
 						// XOR definition
 						if (childrenofchildren_j == (fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
 								.size() - 1)) {
-							// XOR Limboole 
+							// XOR Limboole for N nodes
 							String expression = "";
 							for (int nodeChild_i = 0; nodeChild_i < nodesXOR.size(); nodeChild_i++) {
 								for (int nodeChild_j = 0; nodeChild_j < nodesXOR.size(); nodeChild_j++) {

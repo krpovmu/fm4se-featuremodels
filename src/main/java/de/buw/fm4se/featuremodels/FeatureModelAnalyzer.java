@@ -15,7 +15,6 @@ public class FeatureModelAnalyzer {
 
 	public static boolean checkConsistent(FeatureModel fm) {
 		String formula = FeatureModelTranslator.translateToFormula(fm);
-
 		String result;
 		try {
 			result = LimbooleExecutor.runLimboole(formula, true);
@@ -44,10 +43,8 @@ public class FeatureModelAnalyzer {
 	}
 
 	public static List<String> deadFeatureNames(FeatureModel fm) {
-		
 		List<String> deadFeatures = new ArrayList<>();
 		String formula = FeatureModelTranslator.translateToFormula(fm);
-
 		for (int featureRoot = 0; featureRoot < fm.getRoot().getChildren().size(); featureRoot++) {
 			if (fm.getRoot().getChildren().get(featureRoot).getChildren().size() > 0) {
 				for (int featureChildren = 0; featureChildren < fm.getRoot().getChildren().get(featureRoot)
@@ -74,16 +71,38 @@ public class FeatureModelAnalyzer {
 				}
 			}
 		}
-		System.out.println(deadFeatures);
+//		System.out.println(deadFeatures);
 		return deadFeatures;
 	}
 
 	public static List<String> mandatoryFeatureNames(FeatureModel fm) {
 		List<String> mandatoryFeatures = new ArrayList<>();
+		List<String> deadfeautures = deadFeatureNames(fm);
 
-		// TODO check for mandatory features
-
+		for (int featureRoot = 0; featureRoot < fm.getRoot().getChildren().size(); featureRoot++) {
+			for (int featureChildren = 0; featureChildren < fm.getRoot().getChildren().get(featureRoot).getChildren()
+					.size(); featureChildren++) {
+				if (deadfeautures.contains(fm.getRoot().getChildren().get(featureRoot).getName())) {
+					System.out.println("Dead feature : " + fm.getRoot().getChildren().get(featureRoot).getName());
+				} else if (deadfeautures
+						.contains(fm.getRoot().getChildren().get(featureRoot).getChildren().get(featureChildren))) {
+					System.out.println("Dead feature : "
+							+ fm.getRoot().getChildren().get(featureRoot).getChildren().get(featureChildren));
+				} else {
+					if (fm.getRoot().getChildren().get(featureRoot).isMandatory()
+							&& !mandatoryFeatures.contains(fm.getRoot().getChildren().get(featureRoot).getName())) {
+						mandatoryFeatures.add(fm.getRoot().getChildren().get(featureRoot).getName());
+					} else if (fm.getRoot().getChildren().get(featureRoot).getChildren().get(featureChildren)
+							.isMandatory()
+							&& !mandatoryFeatures.contains(fm.getRoot().getChildren().get(featureRoot).getChildren()
+									.get(featureChildren).getName())) {
+						mandatoryFeatures.add(fm.getRoot().getChildren().get(featureRoot).getChildren()
+								.get(featureChildren).getName());
+					}
+				}
+			}
+		}
+//		System.out.println(mandatoryFeatures);
 		return mandatoryFeatures;
 	}
-
 }
