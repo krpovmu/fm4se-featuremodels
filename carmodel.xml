@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<featureModel>
+	<properties>
+		<graphics key="autolayoutconstraints" value="false"/>
+		<graphics key="legendposition" value="961,23"/>
+		<graphics key="legendautolayout" value="false"/>
+		<graphics key="showconstraints" value="true"/>
+		<graphics key="showshortnames" value="false"/>
+		<graphics key="layout" value="horizontal"/>
+		<graphics key="showcollapsedconstraints" value="true"/>
+		<graphics key="legendhidden" value="false"/>
+		<graphics key="layoutalgorithm" value="1"/>
+	</properties>
+	<struct>
+		<and abstract="true" mandatory="true" name="Car">
+			<graphics key="collapsed" value="false"/>
+			<alt mandatory="true" name="Motor">
+				<graphics key="collapsed" value="false"/>
+				<feature name="Electric"/>
+				<feature name="Gasoline"/>
+			</alt>
+			<or name="Comfort">
+				<graphics key="collapsed" value="false"/>
+				<feature name="Heating"/>
+				<feature name="Entertaiment"/>
+			</or>
+		</and>
+	</struct>
+	<constraints>
+		<rule>
+			<imp>
+				<var>Electric</var>
+				<var>Heating</var>
+			</imp>
+		</rule>
+	</constraints>
+</featureModel>
