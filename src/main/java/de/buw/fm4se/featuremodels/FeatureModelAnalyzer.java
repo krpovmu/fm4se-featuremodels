@@ -29,14 +29,46 @@ public class FeatureModelAnalyzer {
 		return true;
 	}
 
-	public static List<String> deadFeatureNames(FeatureModel fm) {
-		List<String> deadFeatures = new ArrayList<>();
+	public static boolean checkConsistent(String formula) {
 
-		// TODO check for dead features
+		// String formula = FeatureModelTranslator.translateToFormula(fm);
 
-		return deadFeatures;
+		String result;
+		try {
+			result = LimbooleExecutor.runLimboole(formula, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		if (result.contains("UNSATISFIABLE")) {
+			return false;
+		}
+		return true;
 	}
 
+	public static List<String> deadFeatureNames(FeatureModel fm) {
+		List<String> deadFeatures = new ArrayList<>();
+		String formula = FeatureModelTranslator.translateToFormula(fm);
+		
+		for (int featureRoot = 0; featureRoot < fm.getRoot().getChildren().size(); featureRoot++) {
+			if (fm.getRoot().getChildren().get(featureRoot).getChildren().size() > 0) {
+				for (int featureChildren = 0; featureChildren < fm.getRoot().getChildren().get(featureRoot).getChildren().size(); featureChildren++) {
+					String FeatureToEvaluateChildren = "!("+formula+" & "+ fm.getRoot().getChildren().get(featureRoot).getChildren().get(featureChildren).getName() + ")";
+					if(checkConsistent(formula)== false){
+						deadFeatures.add(FeatureToEvaluateChildren);
+					}
+				}
+			} else {
+				String FeatureToEvaluateFather = "!("+formula + " & "+ fm.getRoot().getChildren().get(featureRoot).getName()+")";
+				if(checkConsistent(formula)== false){
+					deadFeatures.add(FeatureToEvaluateFather);
+				}
+			}
+		}
+		System.out.println(deadFeatures);
+		return deadFeatures;
+	}
+	
 	public static List<String> mandatoryFeatureNames(FeatureModel fm) {
 		List<String> mandatoryFeatures = new ArrayList<>();
 
