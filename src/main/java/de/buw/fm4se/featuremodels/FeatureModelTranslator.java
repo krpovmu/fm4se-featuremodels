@@ -89,7 +89,7 @@ public class FeatureModelTranslator {
 						// XOR definition
 						if (childrenofchildren_j == (fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
 								.size() - 1)) {
-							// a try to create a recurse limboole XOR too difficult and Idk if it's worthy
+							// XOR Limboole 
 							String expression = "";
 							for (int nodeChild_i = 0; nodeChild_i < nodesXOR.size(); nodeChild_i++) {
 								for (int nodeChild_j = 0; nodeChild_j < nodesXOR.size(); nodeChild_j++) {
@@ -98,18 +98,16 @@ public class FeatureModelTranslator {
 									boolean isLastXOR_j = nodesXOR
 											.indexOf(nodesXOR.get(nodeChild_j)) == (nodesXOR.size() - 1) ? true : false;
 									if (nodesXOR.get(nodeChild_i).getName() == nodesXOR.get(nodeChild_j).getName()) {
-										if (nodeChild_j == 0 && !isLastXOR_j) {
+										if (!isLastXOR_j) {
 											expression += "!" + nodesXOR.get(nodeChild_j).getName() + " & ";
 										} else if (nodeChild_j == (nodesXOR.size() - 1)) {
-											expression += " & !" + nodesXOR.get(nodeChild_j).getName();
-										} else {
-											expression = " & !" + nodesXOR.get(nodeChild_j).getName() + "&";
+											expression += "!" + nodesXOR.get(nodeChild_j).getName();
 										}
 									} else {
 										if (isLastXOR_j && !isLastXOR_i) {
 											expression += nodesXOR.get(nodeChild_j).getName() + " | ";
 										} else {
-											expression += nodesXOR.get(nodeChild_j).getName() + " ";
+											expression += nodesXOR.get(nodeChild_j).getName() + " & ";
 										}
 									}
 								}
