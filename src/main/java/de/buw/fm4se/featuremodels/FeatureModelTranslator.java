@@ -79,75 +79,49 @@ public class FeatureModelTranslator {
 						}
 					}
 
-					else if (fm.getRoot().getChildren().get(childrenofchildren_i).getChildGroupKind() == GroupKind.XOR) {
+					else if (fm.getRoot().getChildren().get(childrenofchildren_i)
+							.getChildGroupKind() == GroupKind.XOR) {
 						// Nodes definition
 						String fatherXOR = fm.getRoot().getChildren().get(childrenofchildren_i).getName();
-						childrens.add("(" + fm.getRoot().getChildren().get(childrenofchildren_i).getChildren().get(childrenofchildren_j).getName() + " -> " + fatherXOR + ")");
+						childrens.add("(" + fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
+								.get(childrenofchildren_j).getName() + " -> " + fatherXOR + ")");
 						List<Feature> nodesXOR = fm.getRoot().getChildren().get(childrenofchildren_i).getChildren();
 						// XOR definition
-						if (childrenofchildren_j == (fm.getRoot().getChildren().get(childrenofchildren_i).getChildren().size() - 1)) {
-							
-//							childrens.add("("
-//									+ fatherXOR + ")" + " -> " + "(" + "!" + fm.getRoot().getChildren()
-//											.get(childrenofchildren_i).getChildren().get(childrenofchildren_j).getName()
-//									+ " & "
-//									+ fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
-//											.get(childrenofchildren_j - 1).getName()
-//									+ " | " + "!"
-//									+ fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
-//											.get(childrenofchildren_j - 1).getName()
-//									+ " & " + fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
-//											.get(childrenofchildren_j).getName()
-//									+ ")");
-
+						if (childrenofchildren_j == (fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
+								.size() - 1)) {
 							// a try to create a recurse limboole XOR too difficult and Idk if it's worthy
 							String expression = "";
-//							for (int nodeChild_i = 0 ; nodeChild_i < fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().size() ; nodeChild_i++) {
-							for (int nodeChild_i = 0 ; nodeChild_i < nodesXOR.size() ; nodeChild_i++) {	
-								
-//								for (int nodeChild_j = 0 ; nodeChild_j < fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().size() ; nodeChild_j++) {
-								for (int nodeChild_j = 0 ; nodeChild_j < nodesXOR.size() ; nodeChild_j++) {
-									
-//									boolean isLastXOR_i = fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().indexOf(fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_i)) == (fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().size() - 1) ? true : false;
-//									boolean isLastXOR_j = fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().indexOf(fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j)) == (fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().size() - 1) ? true : false;
-									
-									boolean isLastXOR_i = nodesXOR.indexOf(nodesXOR.get(nodeChild_i)) == (nodesXOR.size() - 1) ? true : false;
-									boolean isLastXOR_j = nodesXOR.indexOf(nodesXOR.get(nodeChild_j)) == (nodesXOR.size() - 1) ? true : false;
-									
-//									if(fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_i).getName() == fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName()) {
-									if(nodesXOR.get(nodeChild_i).getName() == nodesXOR.get(nodeChild_j).getName()) {
-										if(nodeChild_j == 0 && !isLastXOR_j ) {
-											expression += "!" + nodesXOR.get(nodeChild_j).getName() +" & ";
-										}
-//										else if (nodeChild_j == (fm.getRoot().getChildren().get(childrenofchildren_i).getChildren().size() - 1)) {
-										else if (nodeChild_j == (nodesXOR.size() - 1)) {
-//											expression += " & !" + fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName();
+							for (int nodeChild_i = 0; nodeChild_i < nodesXOR.size(); nodeChild_i++) {
+								for (int nodeChild_j = 0; nodeChild_j < nodesXOR.size(); nodeChild_j++) {
+									boolean isLastXOR_i = nodesXOR
+											.indexOf(nodesXOR.get(nodeChild_i)) == (nodesXOR.size() - 1) ? true : false;
+									boolean isLastXOR_j = nodesXOR
+											.indexOf(nodesXOR.get(nodeChild_j)) == (nodesXOR.size() - 1) ? true : false;
+									if (nodesXOR.get(nodeChild_i).getName() == nodesXOR.get(nodeChild_j).getName()) {
+										if (nodeChild_j == 0 && !isLastXOR_j) {
+											expression += "!" + nodesXOR.get(nodeChild_j).getName() + " & ";
+										} else if (nodeChild_j == (nodesXOR.size() - 1)) {
 											expression += " & !" + nodesXOR.get(nodeChild_j).getName();
-										} 
-										else {
-//											expression = " & !" + fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName() + "&";
+										} else {
 											expression = " & !" + nodesXOR.get(nodeChild_j).getName() + "&";
 										}
-									}else {
+									} else {
 										if (isLastXOR_j && !isLastXOR_i) {
-//											expression += fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName() +" | ";
-											expression += nodesXOR.get(nodeChild_j).getName() +" | ";
-										}else {
-//											expression += fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName() +" ";
-											expression += nodesXOR.get(nodeChild_j).getName() +" ";
+											expression += nodesXOR.get(nodeChild_j).getName() + " | ";
+										} else {
+											expression += nodesXOR.get(nodeChild_j).getName() + " ";
 										}
 									}
 								}
 							}
-//							System.out.println("("+fatherXOR+") -> ("+expression+")");
-							childrens.add("("+fatherXOR+") -> ("+expression+")");
+							childrens.add("(" + fatherXOR + ") -> (" + expression + ")");
 						}
 					}
 				}
 			}
 		}
 
-		// This part add the &
+		// This part add the & to the nodes
 		for (int children = 0; children < childrens.size(); children++) {
 			if (children == (childrens.size() - 1)) {
 				limbooleFormula += childrens.get(children);
@@ -165,6 +139,5 @@ public class FeatureModelTranslator {
 			limbooleFormula = root;
 		}
 		return limbooleFormula;
-//		return "";
 	}
 }
