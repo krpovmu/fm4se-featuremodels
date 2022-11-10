@@ -13,9 +13,7 @@ public class PrinterExample {
 
 	public static void main(String[] args) {
 		FeatureModel fm = ExampleFmCreator.getSimpleFm();
-		FeatureModel fmm = ExampleFmCreator.getBadFm();
-		FeatureModel fmmm = ExampleFmCreator.getEshopFm();
-//		System.out.println(printFeatureModel(fm));
+		System.out.println(printFeatureModel(fm));
 		System.out.println(printFeatureModelTranslator(fm));
 	}
 

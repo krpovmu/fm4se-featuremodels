@@ -44,5 +44,4 @@ class FeatureModelAnalyzerTest {
 
 		assertTrue(MandatoryFeatures.contains("motor"));
 	}
-
 }
