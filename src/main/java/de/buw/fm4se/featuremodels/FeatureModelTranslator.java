@@ -2,12 +2,14 @@ package de.buw.fm4se.featuremodels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.buw.fm4se.featuremodels.fm.Feature;
 import de.buw.fm4se.featuremodels.fm.FeatureModel;
 import de.buw.fm4se.featuremodels.fm.GroupKind;
 
 public class FeatureModelTranslator {
 	public static String translateToFormula(FeatureModel fm) {
-		
+
 		String root = "";
 		String limbooleFormula = "";
 		List<String> constrains = new ArrayList<>();
@@ -75,25 +77,70 @@ public class FeatureModelTranslator {
 							}
 							childrens.add("(" + fatherOR + " -> " + "(" + featuresOR + "))");
 						}
-					} else if (fm.getRoot().getChildren().get(childrenofchildren_i)
-							.getChildGroupKind() == GroupKind.XOR) {
+					}
+
+					else if (fm.getRoot().getChildren().get(childrenofchildren_i).getChildGroupKind() == GroupKind.XOR) {
+						// Nodes definition
 						String fatherXOR = fm.getRoot().getChildren().get(childrenofchildren_i).getName();
-						childrens.add("(" + fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
-								.get(childrenofchildren_j).getName() + " -> " + fatherXOR + ")");
-						if (childrenofchildren_j == (fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
-								.size() - 1)) {
-							childrens.add("("
-									+ fatherXOR + ")" + " -> " + "(" + "!" + fm.getRoot().getChildren()
-											.get(childrenofchildren_i).getChildren().get(childrenofchildren_j).getName()
-									+ " & "
-									+ fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
-											.get(childrenofchildren_j - 1).getName()
-									+ " | " + "!"
-									+ fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
-											.get(childrenofchildren_j - 1).getName()
-									+ " & " + fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
-											.get(childrenofchildren_j).getName()
-									+ ")");
+						childrens.add("(" + fm.getRoot().getChildren().get(childrenofchildren_i).getChildren().get(childrenofchildren_j).getName() + " -> " + fatherXOR + ")");
+						List<Feature> nodesXOR = fm.getRoot().getChildren().get(childrenofchildren_i).getChildren();
+						// XOR definition
+						if (childrenofchildren_j == (fm.getRoot().getChildren().get(childrenofchildren_i).getChildren().size() - 1)) {
+							
+//							childrens.add("("
+//									+ fatherXOR + ")" + " -> " + "(" + "!" + fm.getRoot().getChildren()
+//											.get(childrenofchildren_i).getChildren().get(childrenofchildren_j).getName()
+//									+ " & "
+//									+ fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
+//											.get(childrenofchildren_j - 1).getName()
+//									+ " | " + "!"
+//									+ fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
+//											.get(childrenofchildren_j - 1).getName()
+//									+ " & " + fm.getRoot().getChildren().get(childrenofchildren_i).getChildren()
+//											.get(childrenofchildren_j).getName()
+//									+ ")");
+
+							// a try to create a recurse limboole XOR too difficult and Idk if it's worthy
+							String expression = "";
+//							for (int nodeChild_i = 0 ; nodeChild_i < fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().size() ; nodeChild_i++) {
+							for (int nodeChild_i = 0 ; nodeChild_i < nodesXOR.size() ; nodeChild_i++) {	
+								
+//								for (int nodeChild_j = 0 ; nodeChild_j < fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().size() ; nodeChild_j++) {
+								for (int nodeChild_j = 0 ; nodeChild_j < nodesXOR.size() ; nodeChild_j++) {
+									
+//									boolean isLastXOR_i = fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().indexOf(fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_i)) == (fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().size() - 1) ? true : false;
+//									boolean isLastXOR_j = fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().indexOf(fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j)) == (fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().size() - 1) ? true : false;
+									
+									boolean isLastXOR_i = nodesXOR.indexOf(nodesXOR.get(nodeChild_i)) == (nodesXOR.size() - 1) ? true : false;
+									boolean isLastXOR_j = nodesXOR.indexOf(nodesXOR.get(nodeChild_j)) == (nodesXOR.size() - 1) ? true : false;
+									
+//									if(fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_i).getName() == fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName()) {
+									if(nodesXOR.get(nodeChild_i).getName() == nodesXOR.get(nodeChild_j).getName()) {
+										if(nodeChild_j == 0 && !isLastXOR_j ) {
+											expression += "!" + nodesXOR.get(nodeChild_j).getName() +" & ";
+										}
+//										else if (nodeChild_j == (fm.getRoot().getChildren().get(childrenofchildren_i).getChildren().size() - 1)) {
+										else if (nodeChild_j == (nodesXOR.size() - 1)) {
+//											expression += " & !" + fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName();
+											expression += " & !" + nodesXOR.get(nodeChild_j).getName();
+										} 
+										else {
+//											expression = " & !" + fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName() + "&";
+											expression = " & !" + nodesXOR.get(nodeChild_j).getName() + "&";
+										}
+									}else {
+										if (isLastXOR_j && !isLastXOR_i) {
+//											expression += fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName() +" | ";
+											expression += nodesXOR.get(nodeChild_j).getName() +" | ";
+										}else {
+//											expression += fm.getRoot().getChildren().get(childrenofchildren_j).getChildren().get(nodeChild_j).getName() +" ";
+											expression += nodesXOR.get(nodeChild_j).getName() +" ";
+										}
+									}
+								}
+							}
+//							System.out.println("("+fatherXOR+") -> ("+expression+")");
+							childrens.add("("+fatherXOR+") -> ("+expression+")");
 						}
 					}
 				}
@@ -102,10 +149,6 @@ public class FeatureModelTranslator {
 
 		// This part add the &
 		for (int children = 0; children < childrens.size(); children++) {
-//			boolean isLast = (childrens.indexOf(childrens.get(children)) == (childrens.size() - 1)) ? true : false;
-//			if (children == 0 && !isLast) {
-//				limbooleFormula += childrens.get(children) + " & ";
-//			} else 
 			if (children == (childrens.size() - 1)) {
 				limbooleFormula += childrens.get(children);
 			} else {
@@ -122,5 +165,6 @@ public class FeatureModelTranslator {
 			limbooleFormula = root;
 		}
 		return limbooleFormula;
+//		return "";
 	}
 }
